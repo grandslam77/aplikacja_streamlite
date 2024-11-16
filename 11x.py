@@ -18,7 +18,7 @@ df = pd.read_excel("zestaw_18.xlsx")
 # Load data from uploaded Excel file
 # uploaded_file = '/mnt/data/zestaw5.xlsx'
 # df = pd.read_excel(uploaded_file)
-liczba_pytan=10
+liczba_pytan=11
 # Set up unique test codes for selection
 test_codes = df['Kod_Testu'].unique()
 selected_test_code = st.selectbox("Wybierz zestaw pytań według Kod_Testu:", test_codes)
