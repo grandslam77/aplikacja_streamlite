@@ -1,8 +1,8 @@
-import streamlit as st
-import pandas as pd
+#import streamlit as st
+#import pandas as pd
 #import sqlite3
-import random
 #import os
+
 
 #new_directory = 'E:/PROJEKTY/PROJEKTY/NewWycenaNieruchomosci/egzamin/'
 #os.chdir(new_directory)
