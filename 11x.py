@@ -1,5 +1,5 @@
-#import streamlit as st
-#import pandas as pd
+import streamlit as st
+import pandas as pd
 #import sqlite3
 #import os
 
@@ -18,19 +18,19 @@ df = pd.read_excel("zestaw_18.xlsx")
 # Load data from uploaded Excel file
 # uploaded_file = '/mnt/data/zestaw5.xlsx'
 # df = pd.read_excel(uploaded_file)
-
+liczba_pytan=10
 # Set up unique test codes for selection
 test_codes = df['Kod_Testu'].unique()
 selected_test_code = st.selectbox("Wybierz zestaw pytań według Kod_Testu:", test_codes)
 
 # Function to get random questions for the selected test code
-def get_random_questions(df, kod_testu, n=90):
+def get_random_questions(df, kod_testu, n=liczba_pytan):
     filtered_df = df[df['Kod_Testu'] == kod_testu]
     unique_questions = filtered_df[['Kod_Testu', 'Numer_Pytania', 'Tresc_Pytania']].drop_duplicates(subset=['Numer_Pytania']).sample(n)
     return unique_questions
 
 # Initialize random questions in session state if not already done
-def initialize_questions(df, kod_testu, n=90):
+def initialize_questions(df, kod_testu, n=liczba_pytan):
     if "random_questions" not in st.session_state:
         st.session_state["random_questions"] = get_random_questions(df, kod_testu, n)
 
@@ -128,7 +128,7 @@ if "test_completed" not in st.session_state:
 if not st.session_state["test_started"] and not st.session_state["test_completed"]:
     if st.button("Rozpocznij test"):
         st.session_state["test_started"] = True
-        initialize_questions(df, selected_test_code, n=90)
+        initialize_questions(df, selected_test_code, n=liczba_pytan)
 
 # Generate the test if it has started
 if st.session_state["test_started"]:
