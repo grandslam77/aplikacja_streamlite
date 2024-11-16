@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+#import sqlite3
 import random
-import os
+#import os
 
-new_directory = 'E:/PROJEKTY/PROJEKTY/NewWycenaNieruchomosci/egzamin/'
-os.chdir(new_directory)
+#new_directory = 'E:/PROJEKTY/PROJEKTY/NewWycenaNieruchomosci/egzamin/'
+#os.chdir(new_directory)
 
 # df = pd.read_excel("zestaw1.xlsx")
 # df = pd.read_excel("zestaw2.xlsx")
