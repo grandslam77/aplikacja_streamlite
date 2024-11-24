@@ -3,40 +3,30 @@ import pandas as pd
 #import sqlite3
 #import os
 
-
-#new_directory = 'E:/PROJEKTY/PROJEKTY/NewWycenaNieruchomosci/egzamin/'
-#os.chdir(new_directory)
-
-# df = pd.read_excel("zestaw1.xlsx")
-# df = pd.read_excel("zestaw2.xlsx")
 # df = pd.read_excel("zestaw3.xlsx")
 df = pd.read_excel("zestaw_19.xlsx")
 # df = pd.read_excel("zestaw10.xlsx")
 # df = pd.read_excel("pytania_i_odpowiedzi_X.xlsx")
 
 
-# Load data from uploaded Excel file
-# uploaded_file = '/mnt/data/zestaw5.xlsx'
-# df = pd.read_excel(uploaded_file)
-liczba_pytan=11
-# Set up unique test codes for selection
-test_codes = df['Kod_Testu'].unique()
-selected_test_code = st.selectbox("Wybierz zestaw pytań według Kod_Testu:", test_codes)
+# df['Kod_Testu'] = df['Kod_Testu'].astype(str)
+# df['Numer_Pytania'] = df['Numer_Pytania'].astype(str)
 
-# Function to get random questions for the selected test code
-def get_random_questions(df, kod_testu, n=liczba_pytan):
-    filtered_df = df[df['Kod_Testu'] == kod_testu]
-    unique_questions = filtered_df[['Kod_Testu', 'Numer_Pytania', 'Tresc_Pytania']].drop_duplicates(subset=['Numer_Pytania']).sample(n)
+# Losowanie pytań na podstawie "Kod_Testu" i "Numer_Pytania"
+
+def get_random_questions(df, n=90):
+    unique_questions = df[['Kod_Testu', 'Numer_Pytania', 'Tresc_Pytania']].drop_duplicates(subset=['Kod_Testu', 'Numer_Pytania']).sample(n)
     return unique_questions
 
-# Initialize random questions in session state if not already done
-def initialize_questions(df, kod_testu, n=liczba_pytan):
+# Funkcja generująca pytania, która zapisuje je w st.session_state
+def initialize_questions(df, n=90):
     if "random_questions" not in st.session_state:
-        st.session_state["random_questions"] = get_random_questions(df, kod_testu, n)
+        st.session_state["random_questions"] = get_random_questions(df, n)
 
-# Generate the test form
+# Generowanie formularza testowego
 def generate_test():
     random_questions = st.session_state["random_questions"]
+    
     all_checkbox_keys = []
 
     for _, question_row in random_questions.iterrows():
@@ -47,6 +37,7 @@ def generate_test():
         st.markdown(f"<span style='color:lightblue'><b>Pytanie {question_number} (Test {kod_testu}):</b> {question_text}</span>", unsafe_allow_html=True)
 
         answers = df[(df['Kod_Testu'] == kod_testu) & (df['Numer_Pytania'] == question_number)][['Numer_Odpowiedzi', 'Tresc_Odpowiedzi']]
+
         for idx, row in answers.iterrows():
             checkbox_key = f"checkbox_{kod_testu}_{question_number}_{row['Numer_Odpowiedzi']}"
             st.checkbox(row['Tresc_Odpowiedzi'], key=checkbox_key)
@@ -54,7 +45,7 @@ def generate_test():
 
     return all_checkbox_keys
 
-# Check answers and summarize results
+# Funkcja do sprawdzania odpowiedzi po naciśnięciu przycisku "Zakończ test"
 def check_answers(df, all_checkbox_keys):
     correct = 0
     user_answers = {}
@@ -94,7 +85,7 @@ def check_answers(df, all_checkbox_keys):
 
     return correct, results
 
-# Display results after test completion
+# Funkcja wyświetlająca wyniki po zakończeniu testu
 def display_results(results):
     for result in results:
         if result['is_correct']:
@@ -115,7 +106,7 @@ def display_results(results):
         else:
             st.markdown("<span style='color:red'>Odpowiedź błędna.</span>", unsafe_allow_html=True)
 
-# Application interface
+# Interfejs aplikacji
 st.title("Test wielokrotnego wyboru")
 
 if "test_started" not in st.session_state:
@@ -124,13 +115,13 @@ if "test_started" not in st.session_state:
 if "test_completed" not in st.session_state:
     st.session_state["test_completed"] = False
 
-# Start the test with selected test code
+# Start testu
 if not st.session_state["test_started"] and not st.session_state["test_completed"]:
     if st.button("Rozpocznij test"):
         st.session_state["test_started"] = True
-        initialize_questions(df, selected_test_code, n=liczba_pytan)
+        initialize_questions(df, n=90)
 
-# Generate the test if it has started
+# Generowanie testu, jeśli test się rozpoczął
 if st.session_state["test_started"]:
     all_checkbox_keys = generate_test()
 
@@ -142,14 +133,17 @@ if st.session_state["test_started"]:
 
         display_results(results)
 
-# After test completion, allow a new test or repeating the previous one
+# Po zakończeniu testu - wyświetlenie wyniku i możliwość rozpoczęcia nowego testu
 if st.session_state["test_completed"]:
     if st.button("Powtórz test"):
+        # Resetowanie stanu testu po zakończeniu
         st.session_state["test_completed"] = False
         st.session_state["test_started"] = True
-        st.session_state["random_questions"] = st.session_state["random_questions"]  # Use the same set of questions
-        all_checkbox_keys = generate_test()  # Generate the test again
+        # Użyj zapisanych pytań w sesji
+        st.session_state["random_questions"] = st.session_state["random_questions"]  # Przywróć ten sam zestaw pytań
+        all_checkbox_keys = generate_test()  # Generuj test ponownie
     if st.button("Rozpocznij nowy test"):
+        # Resetowanie stanu testu po zakończeniu
         st.session_state["test_completed"] = False
         st.session_state["test_started"] = False
         del st.session_state["random_questions"]
