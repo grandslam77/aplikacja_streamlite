@@ -20,7 +20,7 @@ def get_random_questions(df, n=11):
     unique_questions = unique_questions.drop_duplicates(subset=['Kod_Testu', 'Numer_Pytania']).sample(n)
     return unique_questions
 
-# Funkcja generująca pytania, która zapisuje je w `st.session_state`
+# Funkcja generująca pytania, która zapisuje je w `st.session_sta
 def initialize_questions(df, n=11):
     if "random_questions" not in st.session_state:
         st.session_state["random_questions"] = get_random_questions(df, n)
