@@ -4,8 +4,8 @@ import pandas as pd
 #import os
 
 # df = pd.read_excel("zestaw3.xlsx")
-# df = pd.read_excel("zestaw_18.xlsx")
-df = pd.read_excel("zestaw_20.xlsx")
+df = pd.read_excel("zestaw_18.xlsx")
+# df = pd.read_excel("zestaw_20.xlsx")
 # df = pd.read_excel("zestaw10.xlsx")
 # df = pd.read_excel("pytania_i_odpowiedzi_X.xlsx")
 
