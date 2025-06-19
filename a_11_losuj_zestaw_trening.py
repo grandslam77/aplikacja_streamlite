@@ -4,7 +4,7 @@ import pandas as pd
 #import os
 
 # df = pd.read_excel("zestaw3.xlsx")
-df = pd.read_excel("zestaw_21.xlsx")
+df = pd.read_excel("zestaw__do_przecwiczenia_1.xlsx")
 # df = pd.read_excel("zestaw10.xlsx")
 # df = pd.read_excel("pytania_i_odpowiedzi_X.xlsx")
 
@@ -14,12 +14,12 @@ df = pd.read_excel("zestaw_21.xlsx")
 
 # Losowanie pytań na podstawie "Kod_Testu" i "Numer_Pytania"
 
-def get_random_questions(df, n=90):
+def get_random_questions(df, n=11):
     unique_questions = df[['Kod_Testu', 'Numer_Pytania', 'Tresc_Pytania']].drop_duplicates(subset=['Kod_Testu', 'Numer_Pytania']).sample(n)
     return unique_questions
 
 # Funkcja generująca pytania, która zapisuje je w st.session_state
-def initialize_questions(df, n=90):
+def initialize_questions(df, n=11):
     if "random_questions" not in st.session_state:
         st.session_state["random_questions"] = get_random_questions(df, n)
 
@@ -119,7 +119,7 @@ if "test_completed" not in st.session_state:
 if not st.session_state["test_started"] and not st.session_state["test_completed"]:
     if st.button("Rozpocznij test"):
         st.session_state["test_started"] = True
-        initialize_questions(df, n=90)
+        initialize_questions(df, n=11)
 
 # Generowanie testu, jeśli test się rozpoczął
 if st.session_state["test_started"]:
